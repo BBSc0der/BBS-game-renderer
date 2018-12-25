@@ -27,10 +27,12 @@ public class Controller implements EventHandler<KeyEvent> {
 
         MapReader mapReader = new MapReader();
 
-        Image tileset = new Image("file:C:\\my-projects\\tileset.png",false);
-        MapBackground mapBackground = mapReader.readMapFromFile("C:\\Users\\kamil.bolesta\\Desktop\\example2.map");
+        //Image tileset = new Image("file:C:\\my-projects\\tileset.png",false);
+        //MapBackground mapBackground = mapReader.readMapFromFile("C:\\Users\\kamil.bolesta\\Desktop\\example2.map");
+        Image tileset = new Image("file:D:\\game-map-renderer-project\\tileset.png",false);
+        MapBackground mapBackground = mapReader.readMapFromFile("D:\\game-map-renderer-project\\example2.map");
 
-        MapRenderer mapRenderer = new MapRenderer(canvas,32);
+        MapRenderer mapRenderer = new MapRenderer(canvas, mapBackground, tileset, 32);
         //mapRenderer.renderMap(mapBackground,tileset);
 
         AnimationTimer animator = new AnimationTimer(){
@@ -46,7 +48,7 @@ public class Controller implements EventHandler<KeyEvent> {
                 if(x > maxX - dotX) dotX = dotX + (x - maxX + dotX);
                 if(y > maxY - dotY) dotY = dotY + (y - maxY + dotY);
 
-                mapRenderer.renderMap(mapBackground,tileset,new Point(x,y));
+                mapRenderer.render(new Point(x,y));
                 canvas.getGraphicsContext2D().setFill(Color.BLACK);
                 canvas.getGraphicsContext2D().fillOval(dotX, dotY, 10, 10);
             }

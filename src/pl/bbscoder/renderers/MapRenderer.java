@@ -13,18 +13,23 @@ import pl.bbscoder.structures.Screen;
 import java.awt.*;
 import java.util.List;
 
-public class MapRenderer {
-    private GraphicsContext gc;
+public class MapRenderer extends Renderer {
     private final int TILE_SIZE;
     private Screen screen;
+    private MapBackground background;
+    private Image tileset;
 
     /**
      *
      * @param canvas canvas on which tile map will be rendered
+     * @param background contains tiles coordinates for all three layers
+     * @param tileset image containing all possible tiles from which map can be rendered
      * @param TILE_SIZE size of the tile of map
      */
-    public MapRenderer(Canvas canvas, int TILE_SIZE){
-        this.gc = canvas.getGraphicsContext2D();
+    public MapRenderer(Canvas canvas, MapBackground background, Image tileset, int TILE_SIZE){
+        super(canvas);
+        this.background = background;
+        this.tileset = tileset;
         this.TILE_SIZE = TILE_SIZE;
         this.screen = new Screen((int)canvas.getWidth(),(int)canvas.getHeight(), TILE_SIZE);
     }
@@ -39,29 +44,17 @@ public class MapRenderer {
     }
 
     /**
-     * Method renders whole map on canvas
-     *
-     * @param background contains tiles coordinates for all three layers
-     * @param tileset image containing all possible tiles from which map can be rendered
-     */
-    public void renderMap(MapBackground background, Image tileset){
-        clearCanvas();
-        renderLayer(background.getFirstLayer(),tileset);
-        renderLayer(background.getSecondLayer(),tileset);
-        renderLayer(background.getThirdLayer(),tileset);
-    }
-    /**
      * Method renders part of map which is specified by location of middle of rendering
      * area and by size of Screen (canvas).
      *
-     * @param background contains tiles coordinates for all three layers
-     * @param tileset image containing all possible tiles from which map can be rendered
+     * @param location coordinates of middle of rendering area
      */
-    public void renderMap(MapBackground background, Image tileset,Point location){
+    @Override
+    public void render(Point location){
         clearCanvas();
-        renderLayerPart(background.getFirstLayer(),tileset,location);
-        renderLayerPart(background.getSecondLayer(),tileset,location);
-        renderLayerPart(background.getThirdLayer(),tileset,location);
+        renderLayerPart(background.getFirstLayer(),location);
+        renderLayerPart(background.getSecondLayer(),location);
+        renderLayerPart(background.getThirdLayer(),location);
     }
 
     /**
@@ -81,41 +74,20 @@ public class MapRenderer {
     }
 
     /**
-     * Renders whole layer
-     *
-     * @param layer single set of coordinates of tiles on tileset
-     * @param tileset image containing all possible tiles from which map can be rendered
-     */
-    private void renderLayer(List<List<Point>> layer, Image tileset){
-        int xMap = 0;
-        int yMap = 0;
-        for(List<Point> row : layer){
-            for(Point tile : row){
-                Image image = getTileFromTileset(tileset,tile);
-                renderTile(image, new Point(xMap*TILE_SIZE,yMap*TILE_SIZE));
-                yMap++;
-            }
-            xMap++;
-            yMap = 0;
-        }
-    }
-
-    /**
      * Renders part of one of the map's layers.
      * Area of rendered part is defined by current location
      * and Screen (canvas) size.
      *
      * @param layer single set of coordinates of tiles on tileset
-     * @param tileset image containing all possible tiles from which map can be rendered
      * @param location coordinates of middle of rendering area
      */
-    private void renderLayerPart(List<List<Point>> layer, Image tileset, Point location){
+    private void renderLayerPart(List<List<Point>> layer, Point location){
 
         Point firstPixel = screen.getFirstPixel(layer,location);
         Point firstTile = screen.getFirstTile(layer,location);
         Point lastTile = screen.getLastTile(layer,location);
 
-        Image tilesOfPartOfLayer = getTilesOfPartOfLayer(layer,tileset,firstTile,lastTile);
+        Image tilesOfPartOfLayer = getTilesOfPartOfLayer(layer,firstTile,lastTile);
         int screen0X = firstPixel.x - firstTile.x*TILE_SIZE;
         int screen0Y = firstPixel.y - firstTile.y*TILE_SIZE;
         int canvasHeight = (int) gc.getCanvas().getHeight();
@@ -129,20 +101,19 @@ public class MapRenderer {
      * Returns image that contains all tiles that will be visible on rendered frame
      *
      * @param layer single set of coordinates of tiles on tileset
-     * @param tileset image containing all possible tiles from which map can be rendered
      * @param firstTile coordinates of upper left tile that is the first tile visible on the screen
      * @param lastTile coordinates of bottom right tile that is the last tile visible on the screen
      * @return image that contains all tiles visible on the screen. Even tiles that will be
      * visible only partially on result frame generated by renderer.
      */
-    private Image getTilesOfPartOfLayer(List<List<Point>> layer, Image tileset, Point firstTile, Point lastTile){
+    private Image getTilesOfPartOfLayer(List<List<Point>> layer, Point firstTile, Point lastTile){
         WritableImage newImage = new WritableImage((lastTile.x - firstTile.x + 1)*TILE_SIZE, (lastTile.y - firstTile.y + 1)*TILE_SIZE);
 
         int xMap = 0, yMap = 0, xLayer =0, yLayer =0;
         for(List<Point> row : layer){
             for(Point tile : row){
                 if(xLayer >= firstTile.x && yLayer >= firstTile.y && xLayer <= lastTile.x && yLayer <= lastTile.y){
-                    Image image = getTileFromTileset(tileset,tile);
+                    Image image = getTileFromTileset(tile);
                     PixelReader tilePR = image.getPixelReader();
                     newImage.getPixelWriter().setPixels(xMap*TILE_SIZE,yMap*TILE_SIZE,TILE_SIZE,TILE_SIZE,tilePR,0,0);
                     yMap++;
@@ -160,11 +131,10 @@ public class MapRenderer {
     /**
      * Returns single tile from tileset
      *
-     * @param tileset image containing all possible tiles from which map can be rendered
      * @param tile coordinates of single tile from tileset
      * @return single tile from tileset
      */
-    private Image getTileFromTileset(Image tileset, Point tile){
+    private Image getTileFromTileset(Point tile){
         Image image;
         if(tile.x > -1 && tile.y > -1){
             try{
@@ -183,5 +153,21 @@ public class MapRenderer {
      */
     private void clearCanvas(){
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+    }
+
+    public MapBackground getBackground() {
+        return background;
+    }
+
+    public void setBackground(MapBackground background) {
+        this.background = background;
+    }
+
+    public Image getTileset() {
+        return tileset;
+    }
+
+    public void setTileset(Image tileset) {
+        this.tileset = tileset;
     }
 }
