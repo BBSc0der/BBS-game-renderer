@@ -8,8 +8,14 @@ public class Screen {
     private int width;
     private int TILE_SIZE;
 
-    public Screen(int width, int heigth,  int TILE_SIZE) {
-        this.height = heigth;
+    /**
+     *
+     * @param width screen width. Same as canvas width
+     * @param height screen height. Same as canvas height
+     * @param TILE_SIZE - size of single tile
+     */
+    public Screen(int width, int height,  int TILE_SIZE) {
+        this.height = height;
         this.width = width;
         this.TILE_SIZE = TILE_SIZE;
     }
@@ -30,6 +36,14 @@ public class Screen {
         this.width = width;
     }
 
+    /**
+     * Returns upper left tile coordinates of currently visible part of map.
+     * Uses current location of middle of the screen and one of the layers.
+     * @param layer one of the layers of map
+     * @param location current position of middle of the screen relative to
+     *                 beginning of the map
+     * @return coordinates of upper left tile of currently visible part of map.
+     */
     public Point getFirstTile(List<List<Point>> layer, Point location){
         int maxTileX = layer.size() -1;
         int maxTileY = layer.get(0).size() -1;
@@ -47,6 +61,14 @@ public class Screen {
         return firstTile;
     }
 
+    /**
+     * Returns bottom right tile coordinates of currently visible part of map.
+     * Uses current location of middle of the screen and one of the layers.
+     * @param layer one of the layers of map
+     * @param location current position of middle of the screen relative to
+     *                 beginning of the map
+     * @return coordinates of bottom right tile of currently visible part of map.
+     */
     public Point getLastTile(List<List<Point>> layer, Point location){
         int maxTileX = layer.size() -1;
         int maxTileY = layer.get(0).size() -1;
@@ -64,7 +86,16 @@ public class Screen {
         return lastTile;
 
     }
-
+    /**
+     * Returns upper left pixel numbers of currently visible part of map.
+     * The numbering is relative to the beginning of the map.
+     * Uses current location of middle of the screen and one of the layers.
+     * @param layer one of the layers of map
+     * @param location current position of middle of the screen relative to
+     *                 beginning of the map
+     * @return pixel numbers of upper left pixel of currently visible part of map
+     * relative to beginning of map.
+     */
     public Point getFirstPixel(List<List<Point>> layer, Point location){
         int maxTileX = layer.size() -1;
         int maxTileY = layer.get(0).size() -1;

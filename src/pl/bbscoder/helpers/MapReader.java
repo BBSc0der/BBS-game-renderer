@@ -17,6 +17,11 @@ public class MapReader {
     private final String LAYER1 = "LAYER1";
     private final String LAYER2 = "LAYER2";
 
+    /**
+     * Reads properties of map from file defined by absolute file path
+     * @param filePath string value represents absolute file path
+     * @return properties of map represented by MapBackground object
+     */
     public MapBackground readMapFromFile(String filePath){
         List<String> lines = readLinesFromFile(filePath);
         List<List<Point>> firstLayer = new ArrayList<>();
@@ -51,6 +56,12 @@ public class MapReader {
         MapBackground mapBackground = new MapBackground(firstLayer,secondLayer,thirdLayer);
         return mapBackground;
     }
+
+    /**
+     * Reads file line by line
+     * @param filePath string value represents absolute file path
+     * @return list of lines from file
+     */
     private List<String> readLinesFromFile(String filePath){
         List<String> lines = new ArrayList<>();
 
@@ -63,6 +74,12 @@ public class MapReader {
         }
         return lines;
     }
+
+    /**
+     * Creates point from string coordinates
+     * @param coordinates a pair of integers represents coordinates of tile
+     * @return object of type Point
+     */
     private Point readPointFromCoordinates(String[] coordinates){
         int x,y;
         try{
