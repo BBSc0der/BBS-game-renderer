@@ -24,10 +24,11 @@ public class MapRenderer extends Renderer {
      * @param canvas canvas on which tile map will be rendered
      * @param background contains tiles coordinates for all three layers
      * @param tileset image containing all possible tiles from which map can be rendered
+     * @param locationKeeper object that stores rendering location information
      * @param TILE_SIZE size of the tile of map
      */
-    public MapRenderer(Canvas canvas, MapBackground background, Image tileset, int TILE_SIZE){
-        super(canvas);
+    public MapRenderer(Canvas canvas, MapBackground background, Image tileset, Point locationKeeper, int TILE_SIZE){
+        super(canvas,locationKeeper);
         this.background = background;
         this.tileset = tileset;
         this.TILE_SIZE = TILE_SIZE;
@@ -47,14 +48,13 @@ public class MapRenderer extends Renderer {
      * Method renders part of map which is specified by location of middle of rendering
      * area and by size of Screen (canvas).
      *
-     * @param location coordinates of middle of rendering area
      */
     @Override
-    public void render(Point location){
+    public void render(){
         clearCanvas();
-        renderLayerPart(background.getFirstLayer(),location);
-        renderLayerPart(background.getSecondLayer(),location);
-        renderLayerPart(background.getThirdLayer(),location);
+        renderLayerPart(background.getFirstLayer());
+        renderLayerPart(background.getSecondLayer());
+        renderLayerPart(background.getThirdLayer());
     }
 
     /**
@@ -79,13 +79,12 @@ public class MapRenderer extends Renderer {
      * and Screen (canvas) size.
      *
      * @param layer single set of coordinates of tiles on tileset
-     * @param location coordinates of middle of rendering area
      */
-    private void renderLayerPart(List<List<Point>> layer, Point location){
+    private void renderLayerPart(List<List<Point>> layer){
 
-        Point firstPixel = screen.getFirstPixel(layer,location);
-        Point firstTile = screen.getFirstTile(layer,location);
-        Point lastTile = screen.getLastTile(layer,location);
+        Point firstPixel = screen.getFirstPixel(layer,locationKeeper);
+        Point firstTile = screen.getFirstTile(layer,locationKeeper);
+        Point lastTile = screen.getLastTile(layer,locationKeeper);
 
         Image tilesOfPartOfLayer = getTilesOfPartOfLayer(layer,firstTile,lastTile);
         int screen0X = firstPixel.x - firstTile.x*TILE_SIZE;

@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import pl.bbscoder.flow.RenderingFlow;
 import pl.bbscoder.renderers.MapRenderer;
 import pl.bbscoder.helpers.MapReader;
 import pl.bbscoder.structures.MapBackground;
@@ -15,8 +16,7 @@ import pl.bbscoder.structures.MapBackground;
 import java.awt.*;
 
 public class Controller implements EventHandler<KeyEvent> {
-    private int x = 955;//320;
-    private int y = 240;
+    Point location;
 
     @FXML
     private Canvas canvas;
@@ -31,24 +31,27 @@ public class Controller implements EventHandler<KeyEvent> {
         //MapBackground mapBackground = mapReader.readMapFromFile("C:\\Users\\kamil.bolesta\\Desktop\\example2.map");
         Image tileset = new Image("file:D:\\game-map-renderer-project\\tileset.png",false);
         MapBackground mapBackground = mapReader.readMapFromFile("D:\\game-map-renderer-project\\example2.map");
-
-        MapRenderer mapRenderer = new MapRenderer(canvas, mapBackground, tileset, 32);
-        //mapRenderer.renderMap(mapBackground,tileset);
+        location = new Point();
+        location.x = 955;
+        location.y = 240;
+        MapRenderer mapRenderer = new MapRenderer(canvas, mapBackground, tileset, location,32);
+        RenderingFlow renderingFlow = new RenderingFlow();
+        renderingFlow.addRenderer(mapRenderer);
+        renderingFlow.startRendering();
 
         AnimationTimer animator = new AnimationTimer(){
             @Override
             public void handle(long arg0) {
                 int dotX = (int) canvas.getWidth()/2;
                 int dotY = (int) canvas.getHeight()/2;
-                if(x < dotX) dotX = dotX - (dotX -x);
-                if(y < dotY) dotY = dotY - (dotY -y);
+                if(location.x < dotX) dotX = dotX - (dotX - location.x);
+                if(location.y < dotY) dotY = dotY - (dotY - location.y);
 
                 int maxX = mapBackground.getFirstLayer().size()*32;
                 int maxY = mapBackground.getFirstLayer().get(0).size()*32;
-                if(x > maxX - dotX) dotX = dotX + (x - maxX + dotX);
-                if(y > maxY - dotY) dotY = dotY + (y - maxY + dotY);
+                if(location.x > maxX - dotX) dotX = dotX + (location.x - maxX + dotX);
+                if(location.y > maxY - dotY) dotY = dotY + (location.y - maxY + dotY);
 
-                mapRenderer.render(new Point(x,y));
                 canvas.getGraphicsContext2D().setFill(Color.BLACK);
                 canvas.getGraphicsContext2D().fillOval(dotX, dotY, 10, 10);
             }
@@ -61,18 +64,18 @@ public class Controller implements EventHandler<KeyEvent> {
     public void handle(KeyEvent arg0) {
 
         if (arg0.getCode() == KeyCode.DOWN ){
-             y=y+10;
+            location.y=location.y+10;
         }
         if (arg0.getCode() == KeyCode.UP ){
-            if(y > 0) y= y-10;
+            if(location.y > 0) location.y= location.y-10;
         }
         if (arg0.getCode() == KeyCode.RIGHT){
-            x=x+10;
+            location.x=location.x+10;
         }
         if (arg0.getCode() == KeyCode.LEFT){
-            if(x > 0) x= x-10;
+            if(location.x > 0) location.x= location.x-10;
         }
-        System.out.println("  x: " + x + " y: " +y);
+        System.out.println("  x: " + location.x + " y: " +location.y);
     }
 
 }

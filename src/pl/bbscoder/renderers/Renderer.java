@@ -8,9 +8,11 @@ import java.awt.*;
 
 public abstract class Renderer {
     protected GraphicsContext gc;
+    protected Point locationKeeper;
 
-    public Renderer(Canvas canvas) {
+    public Renderer(Canvas canvas, Point locationKeeper) {
         this.gc = canvas.getGraphicsContext2D();
+        this.locationKeeper = locationKeeper;
     }
-    public abstract void render(Point location);
+    public abstract void render();
 }
