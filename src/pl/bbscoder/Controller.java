@@ -12,6 +12,8 @@ import pl.bbscoder.flow.RenderingFlow;
 import pl.bbscoder.renderers.MapRenderer;
 import pl.bbscoder.helpers.MapReader;
 import pl.bbscoder.renderers.SpriteRenderer;
+import pl.bbscoder.sprites.Animation;
+import pl.bbscoder.sprites.Animator;
 import pl.bbscoder.sprites.Sprite;
 import pl.bbscoder.structures.GameObject;
 import pl.bbscoder.structures.MapBackground;
@@ -28,7 +30,6 @@ public class Controller implements EventHandler<KeyEvent> {
 
     @FXML
     private void initialize(){
-
 
         MapReader mapReader = new MapReader();
 
@@ -51,10 +52,18 @@ public class Controller implements EventHandler<KeyEvent> {
         gameObject.setPossition(location);
         Image spriteSheet = new Image("file:D:\\game-map-renderer-project\\spritesheet.png",false);
         Sprite sprite = new Sprite(spriteSheet,4,4);
-
+        ArrayList<Point> sequence = new ArrayList<>();
+        sequence.add(new Point(0,0));
+        sequence.add(new Point(1,0));
+        sequence.add(new Point(2,0));
+        sequence.add(new Point(3,0));
+        Animation animation = new Animation("test",sequence,500);
+        sprite.setAnimation(animation);
         gameObject.setSprite(sprite);
         gameObjects.add(gameObject);
         spriteRenderer.setGameObjects(gameObjects);
+        Animator animator = new Animator();
+        animator.runAnimation(sprite);
 
         RenderingFlow renderingFlow = new RenderingFlow();
         renderingFlow.addRenderer(mapRenderer);

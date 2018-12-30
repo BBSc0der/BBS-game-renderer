@@ -1,14 +1,17 @@
 package pl.bbscoder.sprites;
 
 import javafx.scene.image.Image;
+import pl.bbscoder.helpers.ImageDivider;
 
+import java.awt.*;
 import java.util.List;
 
 public class Sprite {
     private Image spriteSheet;
     private int columns;
     private int lines;
-    private List<Animation> animations;
+    private Point currentSprite;
+    private Animation animation;
 
     public Sprite(Image spriteSheet, int columns, int lines) throws ArithmeticException {
         if( spriteSheet.getWidth() % columns != 0 ){
@@ -20,6 +23,7 @@ public class Sprite {
         this.spriteSheet = spriteSheet;
         this.columns = columns;
         this.lines = lines;
+        this.currentSprite = new Point(0,0);
     }
 
     public Image getSpriteSheet() {
@@ -38,11 +42,19 @@ public class Sprite {
         return (int) (spriteSheet.getHeight() / lines);
     }
 
-    public List<Animation> getAnimations() {
-        return animations;
+    public Animation getAnimation() {
+        return animation;
     }
 
-    public void setAnimations(List<Animation> animations) {
-        this.animations = animations;
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
+    public Point getCurrentSprite() {
+        return currentSprite;
+    }
+
+    public void setCurrentSprite(Point currentSprite) {
+        this.currentSprite = currentSprite;
     }
 }

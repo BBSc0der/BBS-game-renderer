@@ -25,7 +25,7 @@ public class SpriteRenderer extends Renderer {
         for(GameObject gameObject : gameObjects){
             Sprite spriteObj = gameObject.getSprite();
             Point goPosition = gameObject.getPossition();
-            Image sprite = ImageDivider.getPartOfImage(spriteObj.getSpriteSheet(),0,0,spriteObj.getSpriteWidth(),spriteObj.getSpriteHeight());
+            Image sprite = ImageDivider.getPartOfImage(spriteObj.getSpriteSheet(),spriteObj.getSpriteWidth()*spriteObj.getCurrentSprite().x,spriteObj.getSpriteHeight()*spriteObj.getCurrentSprite().y,spriteObj.getSpriteWidth(),spriteObj.getSpriteHeight());
             int spriteMidX = (int) gc.getCanvas().getWidth()/2;
             int spriteMidY = (int) gc.getCanvas().getHeight()/2;
             int spriteX = spriteMidX - spriteObj.getSpriteWidth()/2;
